@@ -9,6 +9,7 @@ import * as echarts from 'echarts'
 import {worldMapInfo, countryMapInfo} from '../../data/api/base'
 import {getCircuitsInfo} from '../../data/api/ergast'
 import {mapOption, circuitsScatterOption} from '../../option/mapOption'
+import {winsCountry} from '../../option/mapDataOption'
 import {countryPath} from '../../tool/country'
 export default {
   data () {
@@ -27,7 +28,6 @@ export default {
   },
   methods: {
     async getWorld () {
-      console.log('mapOption', mapOption)
       await worldMapInfo().then(res => {
         const worldMap = this.$refs.worldMap
         this.worldMapChart = echarts.init(worldMap)
@@ -62,10 +62,25 @@ export default {
         }
       })
       this.worldMapChart.setOption({
-        series: {
+        series: [{
           ...circuitsScatterOption,
           data: circuitsScatter
-        }
+        }]
+      })
+      this.showHeatMap()
+    },
+    showHeatMap () {
+      const heatMapData = winsCountry.map(country => {
+        const {longitude, latitude, number} = country
+        return [latitude, longitude, number]
+      })
+      console.log('heatMap', heatMapData)
+      this.worldMapChart.setOption({
+        series: [{
+          type: 'heatmap',
+          coordinateSystem: 'geo',
+          data: heatMapData
+        }]
       })
     },
     async showCountry (country) {
