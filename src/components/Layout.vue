@@ -1,23 +1,26 @@
 <template>
   <div class="layout">
-      <router-view></router-view>
+      <router-view>
+        <FormulaOne/>
+      </router-view>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'layout',
-    data () {
-      return {
-        navShow: true
-      }
-    },
-    methods: {
-      navBtn () {
-        this.navShow = !this.navShow
-      }
+import FormulaOne from './FormulaOne/index.vue'
+export default {
+  name: 'layout',
+  data () {
+    return {
+      navShow: true
     }
+  },
+  methods: {
+  },
+  components: {
+    FormulaOne
   }
+}
 </script>
 <style scoped>
   .layout {

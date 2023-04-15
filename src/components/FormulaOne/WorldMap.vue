@@ -7,9 +7,11 @@
 <script>
 import * as echarts from 'echarts'
 import {worldMapInfo, countryMapInfo} from '../../data/api/base'
-import {getCircuitsInfo} from '../../data/api/ergast'
+import {getCircuitsInfo, getDriverInfo} from '../../data/api/ergast'
 import {mapOption, circuitsScatterOption} from '../../option/mapOption'
 import {countryPath} from '../../tool/country'
+import {setStorage, getStorage, storageKey} from '../../tool/sessionStorage'
+// import {countryToNationality} from '../../tool/countryToNationality'
 export default {
   data () {
     return {
@@ -24,10 +26,10 @@ export default {
   },
   mounted () {
     this.getWorld()
+    // this.getDrivers()
   },
   methods: {
     async getWorld () {
-      console.log('mapOption', mapOption)
       await worldMapInfo().then(res => {
         const worldMap = this.$refs.worldMap
         this.worldMapChart = echarts.init(worldMap)
@@ -42,10 +44,16 @@ export default {
           }
         })
         this.$nextTick(async () => {
-          await getCircuitsInfo().then(res => {
-            const {MRData: {CircuitTable: {Circuits}}} = res
-            this.showCircuits(Circuits)
-          })
+          const circuits = getStorage(storageKey.circuits)
+          if (circuits) {
+            this.showCircuits(circuits)
+          } else {
+            await getCircuitsInfo().then(res => {
+              const {MRData: {CircuitTable: {Circuits}}} = res
+              setStorage(storageKey.circuits, Circuits)
+              this.showCircuits(Circuits)
+            })
+          }
         })
         this.worldMapChart.on('dblclick', async (params) => {
           const {name} = params
@@ -65,6 +73,21 @@ export default {
         series: {
           ...circuitsScatterOption,
           data: circuitsScatter
+        }
+      })
+      // 监听点击事件
+      this.worldMapChart.on('click', function (params) {
+        if (params.seriesType === 'scatter') {
+          const {data: {name}} = params
+          console.log('name', name)
+          console.log('', this.$router)
+          this.$router.push({
+            path: 'formulaOne'
+            // query: {
+            //   name
+            // }
+          })
+          console.log(params)
         }
       })
     },
@@ -93,7 +116,53 @@ export default {
       this.$nextTick(() => {
         this.showCountryMap = false
       })
+    },
+    async getDrivers () {
+      const drivers = getStorage(storageKey.drivers)
+      if (drivers) {
+        this.driversNation(drivers)
+      } else {
+        await getDriverInfo({limit: 1000}).then(res => {
+          const {MRData: {DriverTable: {Drivers}}} = res
+          setStorage(storageKey.drivers, Drivers)
+          this.driversNation(Drivers)
+        })
+      }
+    },
+    driversNation (drivers) {
+      /**
+       * 维护
+       * {
+       *   nation: string,
+       *   number: number,
+       *   driverArr: array
+       * }
+       */
+      const driverNationInfo = new Map()
+      drivers.forEach(driverInfo => {
+        const {nationality} = driverInfo
+        if (driverNationInfo.has(nationality)) {
+          const itemNation = driverNationInfo.get(nationality)
+          const {number, driverArr} = itemNation
+          const newDriverArr = [...driverArr]
+          newDriverArr.push(driverInfo)
+          driverNationInfo.set(nationality, {
+            ...itemNation,
+            number: number + 1,
+            driverArr: newDriverArr
+          })
+        } else {
+          const newDriverArr = []
+          newDriverArr.push(driverInfo)
+          driverNationInfo.set(nationality, {
+            nation: nationality,
+            number: 1,
+            driverArr: newDriverArr
+          })
+        }
+      })
     }
+
   }
 }
 </script>
