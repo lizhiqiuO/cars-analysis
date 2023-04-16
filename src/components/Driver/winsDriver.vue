@@ -107,7 +107,7 @@ export default {
         .enter().append('g')
         .attr('class', 'legend')
         .attr('transform', (d, i) => {
-          console.log(d, i)
+          // console.log(d, i)
           return 'translate(510,' + (i * 20 + 30) + ')'
         })  // transforsm属性便是整个图例的坐标
 
