@@ -1,10 +1,10 @@
 <template>
   <div class="layout">
     <div class="title">
-      f1 analysis
+      F1 analysis
     </div>
     <div class="author">
-      @yansu wang
+      @Yansu Wang
     </div>
   </div>
 </template>
