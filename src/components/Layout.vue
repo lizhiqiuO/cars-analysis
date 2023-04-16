@@ -5,8 +5,8 @@
     </div>
     <div class="author">
       @Yansu Wang
-      哼哼
-      又要改一个
+      lzq是大笨猪，爱笨猪
+      到底哪里改了
     </div>
   </div>
 </template>
