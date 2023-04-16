@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <div class="title">
-      F1 analysis
+      F1 Analysis
     </div>
     <div class="author">
       @Yansu Wang
