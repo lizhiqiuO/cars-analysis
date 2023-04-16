@@ -6,12 +6,15 @@ import router from './router'
 import './assets/css/reset.css'
 import './assets/css/common.css'
 import zoom from './assets/scripts/tool/zoom'
-import echarts from 'echarts'
+import * as echarts from 'echarts'
+import 'ant-design-vue/dist/antd.css'
+import Antd from 'ant-design-vue'
 
 zoom()
 window.addEventListener('resize', zoom)
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts
+Vue.use(Antd)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

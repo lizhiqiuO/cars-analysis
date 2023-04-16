@@ -1,28 +1,31 @@
 <template>
   <div class="layout">
-      <router-view></router-view>
+    <div class="title">
+      f1 analysis
+    </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'layout',
-    data () {
-      return {
-        navShow: true
-      }
-    },
-    methods: {
-      navBtn () {
-        this.navShow = !this.navShow
-      }
+export default {
+  name: 'layout',
+  data () {
+    return {
     }
+  },
+  methods: {
+  },
+  components: {
   }
+}
 </script>
-<style scoped>
+<style scoped="less">
   .layout {
     width: 100%;
     height: 100%;
-    background-color: black;
+
+  }
+  .title {
+    font-size: 100px;
   }
 </style>

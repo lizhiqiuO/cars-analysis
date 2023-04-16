@@ -63,7 +63,7 @@ export const circuitsScatterOption = {
   },
   z: 10,
   tooltip: {
-    // backgroundColor: 'rgba(255,255,255,0)',
+    backgroundColor: 'rgba(100,100,255,1)',
     formatter: function (params) {
       // console.log(params)
       const {value} = params

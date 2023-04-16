@@ -1,16 +1,38 @@
 <template>
   <div id="app">
-    <router-view/>
+    <div class="SwitchRouter">
+      <SwitchRouter/>
+    </div>
+    <div class="content">
+      <router-view/>
+    </div>
   </div>
 </template>
 <script>
+
+import SwitchRouter from './components/SwitchRouter'
+import Layout from './components/Layout.vue'
 export default {
-  name: 'app'
+  name: 'App',
+  components: {
+    SwitchRouter,
+    Layout
+  }
 }
 </script>
 <style>
 #app {
-  width: 100%;
-  height: 100%;
+  display: flex;
+  min-height: 1200px;
+  .SwitchRouter {
+    flex: 0.5;
+  }
+  .content {
+    display: flex;
+    flex: 2;
+    justify-content: center;
+  }
 }
+
+
 </style>

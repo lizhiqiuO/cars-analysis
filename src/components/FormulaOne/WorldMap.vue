@@ -7,16 +7,20 @@
 <script>
 import * as echarts from 'echarts'
 import {worldMapInfo, countryMapInfo} from '../../data/api/base'
-import {getCircuitsInfo} from '../../data/api/ergast'
+import {getCircuitsInfo, getDriverInfo} from '../../data/api/ergast'
 import {mapOption, circuitsScatterOption} from '../../option/mapOption'
 import {winsCountry} from '../../option/mapDataOption'
 import {countryPath} from '../../tool/country'
+import {setStorage, getStorage, storageKey} from '../../tool/sessionStorage'
+// import {countryToNationality} from '../../tool/countryToNationality'
 export default {
   data () {
     return {
       worldMapChart: {},
       // 显示二级页面
-      showCountryMap: false
+      showCountryMap: false,
+      // 全局的 option
+      global_option: {}
     }
   },
   props: {
@@ -25,6 +29,7 @@ export default {
   },
   mounted () {
     this.getWorld()
+    // this.getDrivers()
   },
   methods: {
     async getWorld () {
@@ -33,19 +38,26 @@ export default {
         this.worldMapChart = echarts.init(worldMap)
         echarts.registerMap('world', res)
         const {geo, legend, tooltip} = mapOption
-        this.worldMapChart.setOption({
+        this.global_option = {
           legend,
           tooltip,
           geo: {
             map: 'world',
             ...geo
           }
-        })
+        }
+        this.worldMapChart.setOption({...this.global_option})
         this.$nextTick(async () => {
-          await getCircuitsInfo().then(res => {
-            const {MRData: {CircuitTable: {Circuits}}} = res
-            this.showCircuits(Circuits)
-          })
+          const circuits = getStorage(storageKey.circuits)
+          if (circuits) {
+            this.showCircuits(circuits)
+          } else {
+            await getCircuitsInfo().then(res => {
+              const {MRData: {CircuitTable: {Circuits}}} = res
+              setStorage(storageKey.circuits, Circuits)
+              this.showCircuits(Circuits)
+            })
+          }
         })
         this.worldMapChart.on('dblclick', async (params) => {
           const {name} = params
@@ -61,28 +73,64 @@ export default {
           value: [Number(long), Number(lat), circuitsItem]
         }
       })
+      this.global_option = {...this.global_option,
+        series: [
+          {
+            ...circuitsScatterOption,
+            data: circuitsScatter
+          }]
+      }
       this.worldMapChart.setOption({
-        series: [{
-          ...circuitsScatterOption,
-          data: circuitsScatter
-        }]
+        ...this.global_option
+      })
+      // 监听点击事件
+      this.worldMapChart.on('click', (params) => {
+        console.log('params', params)
+        if (params.seriesType === 'scatter') {
+          console.log(params)
+          const {data: {name}} = params
+          console.log('name', name)
+          console.log('', this.$router)
+          this.$router.push({
+            path: 'Circuits',
+            query: {
+              name
+            }
+          })
+        }
       })
       this.showHeatMap()
     },
+    // 热力图
     showHeatMap () {
       const heatMapData = winsCountry.map(country => {
         const {longitude, latitude, number} = country
-        return [latitude, longitude, number]
+        return [longitude, latitude, number]
       })
-      console.log('heatMap', heatMapData)
+      const {series} = this.global_option
+      this.global_option = {...this.global_option,
+        visualMap: {
+          min: 0,
+          max: 10,
+          calculable: true,
+          orient: 'horizontal',
+          left: 'center',
+          bottom: '15%'
+        },
+        series: [
+          ...series,
+          {
+            type: 'heatmap',
+            coordinateSystem: 'geo',
+            data: heatMapData
+          }
+        ]
+      }
       this.worldMapChart.setOption({
-        series: [{
-          type: 'heatmap',
-          coordinateSystem: 'geo',
-          data: heatMapData
-        }]
+        ...this.global_option
       })
     },
+
     async showCountry (country) {
       const path = countryPath(country)
       if (path) {
@@ -108,7 +156,53 @@ export default {
       this.$nextTick(() => {
         this.showCountryMap = false
       })
+    },
+    async getDrivers () {
+      const drivers = getStorage(storageKey.drivers)
+      if (drivers) {
+        this.driversNation(drivers)
+      } else {
+        await getDriverInfo({limit: 1000}).then(res => {
+          const {MRData: {DriverTable: {Drivers}}} = res
+          setStorage(storageKey.drivers, Drivers)
+          this.driversNation(Drivers)
+        })
+      }
+    },
+    driversNation (drivers) {
+      /**
+       * 维护
+       * {
+       *   nation: string,
+       *   number: number,
+       *   driverArr: array
+       * }
+       */
+      const driverNationInfo = new Map()
+      drivers.forEach(driverInfo => {
+        const {nationality} = driverInfo
+        if (driverNationInfo.has(nationality)) {
+          const itemNation = driverNationInfo.get(nationality)
+          const {number, driverArr} = itemNation
+          const newDriverArr = [...driverArr]
+          newDriverArr.push(driverInfo)
+          driverNationInfo.set(nationality, {
+            ...itemNation,
+            number: number + 1,
+            driverArr: newDriverArr
+          })
+        } else {
+          const newDriverArr = []
+          newDriverArr.push(driverInfo)
+          driverNationInfo.set(nationality, {
+            nation: nationality,
+            number: 1,
+            driverArr: newDriverArr
+          })
+        }
+      })
     }
+
   }
 }
 </script>
@@ -117,7 +211,7 @@ export default {
   width: 100%;
 }
 .mapChart .chart {
-  height: 800px;
-  width: 1400px;
+  height: 900px;
+  width: 1000px;
 }
 </style>

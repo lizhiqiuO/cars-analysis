@@ -29,3 +29,16 @@ export const ergastGet = (url, params, needCommonParams = true) => {
     console.log(err)
   })
 }
+
+export const ergastYearGet = (url, year, params, needCommonParams = true) => {
+  const allParams = {...params}
+  const newUrl = year + '/' + url
+  return axios.get(newUrl, {
+    baseURL: ergastUrl,
+    params: allParams
+  }).then(res => {
+    return res.data
+  }).catch(err => {
+    console.log(err)
+  })
+}
