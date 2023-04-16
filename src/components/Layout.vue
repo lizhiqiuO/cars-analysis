@@ -3,6 +3,9 @@
     <div class="title">
       f1 analysis
     </div>
+    <div class="author">
+      @yansu wang
+    </div>
   </div>
 </template>
 
@@ -23,7 +26,7 @@ export default {
   .layout {
     width: 100%;
     height: 100%;
-
+    text-align: center;
   }
   .title {
     font-size: 100px;

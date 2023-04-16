@@ -1,10 +1,14 @@
 <template>
   <div class="router">
-    <a-menu
+      <a-menu
       theme="dark"
       mode="inline"
       style="width: 100%; height: 100%"
     >
+      <a-menu-item @click="jumpToRouter(router.Home)">
+          <a-icon type="flag" />
+          <span>Home</span>
+      </a-menu-item>
       <a-sub-menu>
         <span slot="title">
           <a-icon type="user" />
@@ -42,6 +46,7 @@ export default {
   data () {
     return {
       router: {
+        Home: 'Home',
         FormulaOne: 'FormulaOne',
         Constructor: 'Constructor',
         WinsConstructor: 'WinsConstructor',
@@ -65,5 +70,6 @@ export default {
 <style scoped="less">
 .router {
   height: 100%;
+  background: #001529;
 }
 </style>

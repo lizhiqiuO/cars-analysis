@@ -14,6 +14,10 @@ const router = new Router({
   routes: [
     {
       path: '/',
+      redirect: '/Home'
+    },
+    {
+      path: '/Home',
       component: Layout
     },
     {

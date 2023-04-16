@@ -1,18 +1,22 @@
 <template>
-  <div class='mapChart' @dblclick="backToWorldMap">
-    <div class='chart' ref="worldMap"></div>
+  <div class="map">
+    <div class="button">
+      <a-button type="primary" ghost class="constructor" @click="clickConstructor">constructor map</a-button>
+      <a-button type="primary" ghost class="wins" @click="clickWins">win map</a-button>
+    </div>
+    <div class='mapChart'>
+      <div class='chart' ref="worldMap"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import * as echarts from 'echarts'
-import {worldMapInfo, countryMapInfo} from '../../data/api/base'
-import {getCircuitsInfo, getDriverInfo} from '../../data/api/ergast'
+import {worldMapInfo} from '../../data/api/base'
+import {getCircuitsInfo} from '../../data/api/ergast'
 import {mapOption, circuitsScatterOption} from '../../option/mapOption'
 import {winsCountry} from '../../option/mapDataOption'
-import {countryPath} from '../../tool/country'
 import {setStorage, getStorage, storageKey} from '../../tool/sessionStorage'
-// import {countryToNationality} from '../../tool/countryToNationality'
 export default {
   data () {
     return {
@@ -29,7 +33,6 @@ export default {
   },
   mounted () {
     this.getWorld()
-    // this.getDrivers()
   },
   methods: {
     async getWorld () {
@@ -48,20 +51,11 @@ export default {
         }
         this.worldMapChart.setOption({...this.global_option})
         this.$nextTick(async () => {
-          const circuits = getStorage(storageKey.circuits)
-          if (circuits) {
-            this.showCircuits(circuits)
-          } else {
-            await getCircuitsInfo().then(res => {
-              const {MRData: {CircuitTable: {Circuits}}} = res
-              setStorage(storageKey.circuits, Circuits)
-              this.showCircuits(Circuits)
-            })
-          }
-        })
-        this.worldMapChart.on('dblclick', async (params) => {
-          const {name} = params
-          this.showCountry(name)
+          await getCircuitsInfo().then(res => {
+            const {MRData: {CircuitTable: {Circuits}}} = res
+            setStorage(storageKey.circuits, Circuits)
+            this.showCircuits(Circuits)
+          })
         })
       })
     },
@@ -74,6 +68,9 @@ export default {
         }
       })
       this.global_option = {...this.global_option,
+        visualMap: {
+          show: false
+        },
         series: [
           {
             ...circuitsScatterOption,
@@ -99,7 +96,6 @@ export default {
           })
         }
       })
-      this.showHeatMap()
     },
     // 热力图
     showHeatMap () {
@@ -107,7 +103,6 @@ export default {
         const {longitude, latitude, number} = country
         return [longitude, latitude, number]
       })
-      const {series} = this.global_option
       this.global_option = {...this.global_option,
         visualMap: {
           min: 0,
@@ -115,10 +110,10 @@ export default {
           calculable: true,
           orient: 'horizontal',
           left: 'center',
-          bottom: '15%'
+          bottom: '15%',
+          show: true
         },
         series: [
-          ...series,
           {
             type: 'heatmap',
             coordinateSystem: 'geo',
@@ -129,86 +124,31 @@ export default {
       this.worldMapChart.setOption({
         ...this.global_option
       })
+      this.spinning = false
     },
-
-    async showCountry (country) {
-      const path = countryPath(country)
-      if (path) {
-        await countryMapInfo({url: path}).then(res => {
-          echarts.registerMap(path, res)
-          this.worldMapChart.setOption({
-            geo: {
-              map: path
-            }
-          })
-          this.$nextTick(() => {
-            this.showCountryMap = true
-          })
-        })
-      }
+    clickConstructor () {
+      const circuits = getStorage(storageKey.circuits)
+      this.showCircuits(circuits)
     },
-    async backToWorldMap () {
-      this.worldMapChart.setOption({
-        geo: {
-          map: 'world'
-        }
-      })
-      this.$nextTick(() => {
-        this.showCountryMap = false
-      })
-    },
-    async getDrivers () {
-      const drivers = getStorage(storageKey.drivers)
-      if (drivers) {
-        this.driversNation(drivers)
-      } else {
-        await getDriverInfo({limit: 1000}).then(res => {
-          const {MRData: {DriverTable: {Drivers}}} = res
-          setStorage(storageKey.drivers, Drivers)
-          this.driversNation(Drivers)
-        })
-      }
-    },
-    driversNation (drivers) {
-      /**
-       * 维护
-       * {
-       *   nation: string,
-       *   number: number,
-       *   driverArr: array
-       * }
-       */
-      const driverNationInfo = new Map()
-      drivers.forEach(driverInfo => {
-        const {nationality} = driverInfo
-        if (driverNationInfo.has(nationality)) {
-          const itemNation = driverNationInfo.get(nationality)
-          const {number, driverArr} = itemNation
-          const newDriverArr = [...driverArr]
-          newDriverArr.push(driverInfo)
-          driverNationInfo.set(nationality, {
-            ...itemNation,
-            number: number + 1,
-            driverArr: newDriverArr
-          })
-        } else {
-          const newDriverArr = []
-          newDriverArr.push(driverInfo)
-          driverNationInfo.set(nationality, {
-            nation: nationality,
-            number: 1,
-            driverArr: newDriverArr
-          })
-        }
-      })
+    clickWins () {
+      this.showHeatMap()
     }
-
   }
 }
 </script>
-<style scoped>
+<style scoped="less">
+.button {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+  .constructor {
+    margin-right: 100px;
+  }
+}
 .mapChart {
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 .mapChart .chart {
   height: 900px;

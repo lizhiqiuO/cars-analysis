@@ -23,7 +23,7 @@ export default {
 <style>
 #app {
   display: flex;
-  min-height: 1200px;
+  min-height: 1016px;
   .SwitchRouter {
     flex: 0.5;
   }

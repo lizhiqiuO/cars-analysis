@@ -2,7 +2,6 @@
   <div>
     <div class="title">
       <a-select
-        :size="large"
         v-model="currentYear"
         @change="yearChange"
         style="width: 80px;margin-right: 20px;"

@@ -100,6 +100,34 @@ export default {
         .on('mouseout', function () {
           tooltip.style('visibility', 'hidden')
         })
+
+        // 初始化图例，将data_legend与图例绑定
+      const legend = svg.selectAll('.legend')
+        .data(this.data)
+        .enter().append('g')
+        .attr('class', 'legend')
+        .attr('transform', (d, i) => {
+          console.log(d, i)
+          return 'translate(510,' + (i * 20 + 30) + ')'
+        })  // transforsm属性便是整个图例的坐标
+
+      // 绘制文字后方的颜色框或线
+      legend.append('circle')
+      .attr('r', 5)
+      .attr('fill', d => colorScale(d.name))
+
+        // 绘制图例文字
+      legend.append('text')
+      .attr('y', 15)
+      .style('text-anchor', 'end') // 样式对齐
+      .text(function (d) {
+        return d.name
+      })
+
+      const domains = document.querySelectorAll('.domain')
+      domains.forEach((domain) => {
+        domain.style.stroke = 'white'
+      })
     }
   }
 }

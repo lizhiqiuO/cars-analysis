@@ -7,6 +7,11 @@ const mapGeoOptions = {
     borderColor: 'rgba(43,177,189,0.1)', // 图形的描边颜色 支持的颜色格式同 color，不支持回调函数
     borderType: 'solid' // 描边类型，默认为实线，支持 'solid', 'dashed', 'dotted'
   },
+  roam: true,
+  scaleLimit: {
+    min: 1,
+    max: 3
+  },
   // 高亮状态下的多边形和标签样式
   emphasis: {
     label: {
@@ -63,7 +68,7 @@ export const circuitsScatterOption = {
   },
   z: 10,
   tooltip: {
-    backgroundColor: 'rgba(100,100,255,1)',
+    backgroundColor: '#1e1e1e',
     formatter: function (params) {
       // console.log(params)
       const {value} = params
