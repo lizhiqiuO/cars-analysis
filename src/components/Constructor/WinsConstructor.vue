@@ -23,8 +23,8 @@ export default {
     drewBars (ref, barData, text) {
 // 设置svg的宽和高
       const width = 600
-      const height = 300
-      const margin = { top: 100, right: 105, bottom: 20, left: 50 }
+      const height = 275
+      const margin = { top: 30, right: 105, bottom: 20, left: 50 }
 
     // 创建SVG元素
       const svg = d3.select(ref)
@@ -38,7 +38,7 @@ export default {
       const xScale = d3.scaleBand()
       .domain(barData.map(d => d.name))
       .range([0, width])
-      .padding(0.1)
+      .padding(0.4)
 
     // 定义柱状图的y轴比例尺
       const yScale = d3.scaleLinear()
@@ -63,7 +63,7 @@ export default {
       .attr('width', xScale.bandwidth())
       .attr('height', d => height - yScale(d.value))
       .attr('fill', (d, i) => `${d.color}`)
-      .on('mouseover', (d) => {
+      .on('mouseover', function (d) {
         const {name, value} = d
         tooltip.style('visibility', 'visible')
             .html(`
@@ -78,10 +78,26 @@ export default {
             `)
             .style('left', `${d3.event.pageX + 10}px`)
             .style('top', `${d3.event.pageY + 10}px`)
+        mouseoverLine
+          .attr('x1', 0)
+          .attr('y1', yScale(d.value))
+          .attr('x2', width)
+          .attr('y2', yScale(d.value))
+          .style('opacity', 1)
+
+        d3.select(this)
+          .attr('opacity', 0.3)
+          .attr('x', (a) => xScale(a.name) - 5)
+          .attr('width', xScale.bandwidth() + 10)
       })
-        .on('mouseout', function () {
-          tooltip.style('visibility', 'hidden')
-        })
+      .on('mouseout', function (d) {
+        tooltip.style('visibility', 'hidden')
+        mouseoverLine.style('opacity', 0)
+        d3.select(this)
+          .attr('opacity', 1)
+          .attr('x', (a) => xScale(a.name))
+          .attr('width', xScale.bandwidth())
+      })
 
     // 绘制x轴
       const xAxis = d3.axisBottom(xScale)
@@ -108,6 +124,12 @@ export default {
         .attr('fill', '#fff')
         .text(`${text}`)
 
+      const mouseoverLine = svg
+        .append('line')
+        .attr('stroke', 'white')
+        .style('stroke-dasharray', '5 5')
+        .style('opacity', 0)
+
       // 添加图例
       const legend = svg.append('g')
       .attr('class', 'legend')
@@ -122,6 +144,9 @@ export default {
       .attr('width', 20)
       .attr('height', 20)
       .attr('fill', (d, i) => `${d.color}`)
+      .on('mouseover', (d) => {
+        console.log(d)
+      })
 
       legend.selectAll('text')
       .data(barData)

@@ -69,8 +69,7 @@ export const circuitsScatterOption = {
   z: 10,
   tooltip: {
     backgroundColor: '#1e1e1e',
-    formatter: function (params) {
-      // console.log(params)
+    formatter: (params) => {
       const {value} = params
       const {circuitId, circuitName, Location: {country, locality}} = value[2]
       return `

@@ -58,7 +58,7 @@ export const consturctorSum = [
   {
     name: 'Tyrrell',
     value: 711.00,
-    color: '#8E44AD'
+    color: '#8E4445'
   }
 ]
 

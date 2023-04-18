@@ -9,6 +9,10 @@
           <a-icon type="flag" />
           <span>Home</span>
       </a-menu-item>
+      <a-menu-item @click="jumpToRouter(router.FormulaOne)">
+          <a-icon type="flag" />
+          <span>Circuits Map</span>
+      </a-menu-item>
       <a-sub-menu>
         <span slot="title">
           <a-icon type="user" />
@@ -33,10 +37,6 @@
           by year
         </a-menu-item>
       </a-sub-menu>
-      <a-menu-item @click="jumpToRouter(router.FormulaOne)">
-          <a-icon type="flag" />
-          <span>Circuits Map</span>
-      </a-menu-item>
     </a-menu>
   </div>
 </template>

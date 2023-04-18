@@ -140,7 +140,7 @@ export default {
 .button {
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 50px;
   .constructor {
     margin-right: 100px;
   }
@@ -151,7 +151,7 @@ export default {
   justify-content: center;
 }
 .mapChart .chart {
-  height: 900px;
+  height: 700px;
   width: 1000px;
 }
 </style>
