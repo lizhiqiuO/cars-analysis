@@ -5,9 +5,10 @@
     </div>
     <div class="author">
       @Yansu Wang
-      lzq是大笨猪，爱笨猪
-      到底哪里改了
     </div>
+    <p>
+      test
+    </p>
   </div>
 </template>
 

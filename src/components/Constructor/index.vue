@@ -14,7 +14,7 @@
           {{ item.value }}
         </a-select-option>
       </a-select>
-      Constructors's standings
+      Constructor's standings
     </div>
     <div class="spinning">
       <a-spin :spinning="spinning"></a-spin>
