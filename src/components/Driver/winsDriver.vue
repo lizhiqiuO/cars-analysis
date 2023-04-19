@@ -225,7 +225,8 @@ export default {
           },
           nameTextStyle: {
             color: 'white',
-            fontSize: 20
+            fontSize: 20,
+            lineHeight: 60
           },
           axisLine: {
             lineStyle: {
@@ -280,6 +281,7 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 50px;
 }
 .scatterChart .chart {
   height: 700px;

@@ -41,13 +41,9 @@
           from year 2014-2023.
         </li>
       </div>
-      <div class="router">
-        <li>
-          Data source: Ergast and Kaggle
-        </li>
-        <li>
-          Data processing: Java script and Python
-        </li>
+      <div class="data">
+          * Data source: <a href="http://ergast.com/mrd/">Ergast API</a> and <a href="https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020">Kaggle</a><br/>
+          * Data processing: Java script and Python
       </div>
     </div>
     </div>
@@ -74,7 +70,7 @@ export default {
   font-size: 16px;
 }
 .layoutBorder {
-    width: 800px;
+    width: 830px;
     border: 1px soild #fff;
 }
 .author {
@@ -97,5 +93,11 @@ export default {
 
 .routerName {
   font-size: 25px;
+}
+.data{
+  font-size: 8px;
+  font-style: italic;
+  line-height: 15px;
+  margin-top: 50px;
 }
 </style>
