@@ -202,6 +202,14 @@ export default {
       console.log(driverWinsSeries)
 
       const option = {
+        title: {
+          text: 'Most wins by a driver in a single season',
+          textStyle: {
+            color: 'white'
+          },
+          textAlign: 'auto',
+          left: '355'
+        },
         xAxis: {
           min: (value) => {
             return value.min - 1
@@ -216,14 +224,16 @@ export default {
             show: false
           },
           nameTextStyle: {
-            color: '#111000',
+            color: 'white',
             fontSize: 20
           },
           axisLine: {
             lineStyle: {
               color: 'white'
             }
-          }
+          },
+          name: 'year',
+          nameLocation: 'center'
         },
         yAxis: {
           splitLine: {
@@ -237,7 +247,13 @@ export default {
             lineStyle: {
               color: 'white'
             }
-          }
+          },
+          nameTextStyle: {
+            color: 'white',
+            fontSize: 20
+          },
+          name: 'wins',
+          nameLocation: 'center'
         },
         tooltip: {
           trigger: 'item'
